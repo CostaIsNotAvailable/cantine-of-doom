@@ -1,15 +1,16 @@
 import express from 'express';
 import { authentication, userIdCheck } from '../helpers';
 import { Recipe } from '../models';
-import { MongoHandler } from '../services';
+import { AuthService, MongoHandler } from '../services';
 
 const router = express.Router();
-
 const mongoHandler = new MongoHandler();
 mongoHandler.init();
+const authService = new AuthService();
 
 router.get('/receipes', authentication, async (req, res) => {
-  const recipes = await mongoHandler.getRecipes();
+  const userId = await authService.getUserIdFromRequest(req);
+  const recipes = await mongoHandler.getRecipes(userId);
   res.json(recipes);
 });
 

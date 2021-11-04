@@ -2,6 +2,7 @@ import { Credentials, JwtToken, User } from '../models';
 import { IAuthService } from './interfaces';
 import { sign, verify, decode } from 'jsonwebtoken';
 import { JwtTokenPayload } from '../models/jwtTokenPayload';
+import { Request } from 'express';
 
 export default class AuthService implements IAuthService {
   users: User[] = [
@@ -45,5 +46,12 @@ export default class AuthService implements IAuthService {
   public async getTokenPayload(jwtToken: string): Promise<JwtTokenPayload> {
     const payload = decode(jwtToken.replace('Bearer ', '')) as JwtTokenPayload;
     return { id: payload.id, login: payload.login };
+  }
+
+  public async getUserIdFromRequest(request: Request): Promise<number | undefined> {
+    if (!request.headers.authorization) {
+      return undefined;
+    }
+    return (await this.getTokenPayload(request.headers.authorization)).id;
   }
 }
