@@ -81,6 +81,15 @@ var AuthService = /** @class */ (function () {
             });
         });
     };
+    AuthService.prototype.getTokenPayload = function (jwtToken) {
+        return __awaiter(this, void 0, void 0, function () {
+            var payload;
+            return __generator(this, function (_a) {
+                payload = jsonwebtoken_1.decode(jwtToken.replace('Bearer ', ''));
+                return [2 /*return*/, { id: payload.id, login: payload.login }];
+            });
+        });
+    };
     return AuthService;
 }());
 exports.default = AuthService;

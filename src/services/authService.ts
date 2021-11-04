@@ -1,6 +1,6 @@
 import { Credentials, JwtToken, User } from '../models';
 import { IAuthService } from './interfaces';
-import { sign, verify } from 'jsonwebtoken';
+import { sign, verify, decode } from 'jsonwebtoken';
 import { JwtTokenPayload } from '../models/jwtTokenPayload';
 
 export default class AuthService implements IAuthService {
@@ -40,5 +40,10 @@ export default class AuthService implements IAuthService {
     } catch {
       return false;
     }
+  }
+
+  public async getTokenPayload(jwtToken: string): Promise<JwtTokenPayload> {
+    const payload = decode(jwtToken.replace('Bearer ', '')) as JwtTokenPayload;
+    return { id: payload.id, login: payload.login };
   }
 }

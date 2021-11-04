@@ -1,5 +1,5 @@
 import express from 'express';
-import { authentication } from '../helpers';
+import { authentication, userIdCheck } from '../helpers';
 import { Recipe } from '../models';
 import { MongoHandler } from '../services';
 
@@ -18,7 +18,7 @@ router.get('/receipes/:id', async (req, res) => {
   res.json(recipe);
 });
 
-router.post('/receipes', async (req, res) => {
+router.post('/receipes', authentication, userIdCheck, async (req, res) => {
   const recipe = req.body as Recipe;
   await mongoHandler.createRecipe(recipe);
   res.json(recipe);

@@ -13,5 +13,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./credentials"), exports);
 __exportStar(require("./ingredient"), exports);
 __exportStar(require("./jwtToken"), exports);
+__exportStar(require("./jwtTokenPayload"), exports);
 __exportStar(require("./recipe"), exports);
 __exportStar(require("./user"), exports);

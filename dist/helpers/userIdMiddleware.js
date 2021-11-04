@@ -35,77 +35,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-var helpers_1 = require("../helpers");
 var services_1 = require("../services");
-var router = express_1.default.Router();
-var mongoHandler = new services_1.MongoHandler();
-mongoHandler.init();
-router.get('/receipes', helpers_1.authentication, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var recipes;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoHandler.getRecipes()];
-            case 1:
-                recipes = _a.sent();
-                res.json(recipes);
-                return [2 /*return*/];
-        }
-    });
-}); });
-router.get('/receipes/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var recipe;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoHandler.getRecipe(req.params.id)];
-            case 1:
-                recipe = _a.sent();
-                res.json(recipe);
-                return [2 /*return*/];
-        }
-    });
-}); });
-router.post('/receipes', helpers_1.authentication, helpers_1.userIdCheck, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var recipe;
+var authService = new services_1.AuthService();
+var userIdCheck = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var jwtToken, payload, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                recipe = req.body;
-                return [4 /*yield*/, mongoHandler.createRecipe(recipe)];
+                _a.trys.push([0, 2, , 3]);
+                jwtToken = req.headers.authorization;
+                if (!jwtToken) {
+                    throw new Error('Missing JWT Token');
+                }
+                return [4 /*yield*/, authService.getTokenPayload(jwtToken)];
             case 1:
-                _a.sent();
-                res.json(recipe);
+                payload = _a.sent();
+                if (req.body.userId) {
+                    console.log(req.body.userId);
+                    req.body.userId = payload.id;
+                    console.log(req.body.userId);
+                }
+                console.log(req.body);
+                return [3 /*break*/, 3];
+            case 2:
+                error_1 = _a.sent();
+                next(error_1);
+                return [3 /*break*/, 3];
+            case 3:
+                next();
                 return [2 /*return*/];
         }
     });
-}); });
-router.put('/receipes/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var recipe;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                recipe = req.body;
-                return [4 /*yield*/, mongoHandler.updateRecipe(req.params.id, recipe)];
-            case 1:
-                _a.sent();
-                res.json(recipe);
-                return [2 /*return*/];
-        }
-    });
-}); });
-router.delete('/receipes/:id', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, mongoHandler.deleteRecipe(req.params.id)];
-            case 1:
-                _a.sent();
-                res.json();
-                return [2 /*return*/];
-        }
-    });
-}); });
-exports.default = router;
+}); };
+exports.default = userIdCheck;
