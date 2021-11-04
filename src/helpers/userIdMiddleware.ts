@@ -12,7 +12,7 @@ const userIdCheck = async (req: Request, res: Response, next: NextFunction) => {
 
     const payload = await authService.getTokenPayload(jwtToken);
     if (req.body.userId) {
-      req.body.userId = payload.id;
+      req.body.userId = payload.id.toString();
     }
   } catch (error) {
     next(error);
