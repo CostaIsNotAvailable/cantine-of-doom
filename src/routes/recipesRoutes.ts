@@ -1,6 +1,7 @@
 import express from 'express';
 import { authentication, userIdCheck } from '../helpers';
 import { Recipe } from '../models';
+import { ExtendedRequest } from '../models/extendedRequest';
 import { AuthService, MongoHandler } from '../services';
 
 const router = express.Router();
@@ -8,8 +9,8 @@ const mongoHandler = new MongoHandler();
 mongoHandler.init();
 const authService = new AuthService();
 
-router.get('/receipes', authentication, async (req, res) => {
-  const userId = await authService.getUserIdFromRequest(req);
+router.get('/receipes', authentication, async (req: ExtendedRequest, res) => {
+  const userId = req.user?.id;
   const recipes = await mongoHandler.getRecipes(userId);
   res.json(recipes);
 });

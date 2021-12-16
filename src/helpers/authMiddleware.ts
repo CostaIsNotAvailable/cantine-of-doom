@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
+import { ExtendedRequest } from '../models/extendedRequest';
 import { AuthService } from '../services';
 
 const authService = new AuthService();
 
-const authentication = async (req: Request, res: Response, next: NextFunction) => {
+const authentication = async (req: ExtendedRequest, res: Response, next: NextFunction) => {
   try {
     const jwtToken = req.headers.authorization;
     if (!jwtToken) {
@@ -14,6 +15,9 @@ const authentication = async (req: Request, res: Response, next: NextFunction) =
     if (!isAuthorized) {
       throw new Error('Authentication error');
     }
+
+    const userPayload = await authService.getTokenPayload(jwtToken);
+    req.user = userPayload;
   } catch (error) {
     next(error);
   }
