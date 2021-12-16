@@ -1,5 +1,5 @@
 import { Db, MongoClient, ObjectId } from 'mongodb';
-import { Recipe } from '../models';
+import { Credentials, Recipe, User } from '../models';
 import { IMongoHandler } from './interfaces';
 
 export default class MongoHandler implements IMongoHandler {
@@ -64,5 +64,21 @@ export default class MongoHandler implements IMongoHandler {
 
   public async deleteRecipe(id: string): Promise<boolean> {
     return (await this.database.collection('recipes').deleteOne({ _id: new ObjectId(id) })).acknowledged;
+  }
+
+  public async getUsers(): Promise<User[]> {
+    const users = await this.database
+      .collection('users')
+      .find()
+      .map<User>((d) => d as User)
+      .toArray();
+
+    return users;
+  }
+
+  public async createUser(user: User): Promise<Credentials> {
+    await this.database.collection('users').insertOne(user);
+
+    return user;
   }
 }

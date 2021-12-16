@@ -19,7 +19,7 @@ const authentication = async (req: ExtendedRequest, res: Response, next: NextFun
     const userPayload = await authService.getTokenPayload(jwtToken);
     req.user = userPayload;
   } catch (error) {
-    next(error);
+    res.status(403).json();
   }
 
   next();

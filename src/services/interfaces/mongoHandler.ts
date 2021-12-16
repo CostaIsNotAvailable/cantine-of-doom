@@ -1,4 +1,4 @@
-import { Recipe } from "../../models";
+import { Credentials, Recipe, User } from "../../models";
 
 export interface IMongoHandler {
   init(): Promise<void>;
@@ -7,4 +7,6 @@ export interface IMongoHandler {
   createRecipe(recipe: Recipe): Promise<Recipe>;
   updateRecipe(id: string, recipe: Recipe): Promise<Recipe>;
   deleteRecipe(id: string): Promise<boolean>;
+  getUsers(): Promise<User[]>;
+  createUser(user: Credentials): Promise<Credentials>;
 }
